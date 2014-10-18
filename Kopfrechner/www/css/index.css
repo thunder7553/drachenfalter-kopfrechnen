@@ -143,3 +143,33 @@ h1 {
     background-color:#ff9bff;
     border:1px solid black;
 }
+
+.mainmenu{
+    background-color:#ff9bff;
+    border:1px solid black;
+}
+.mainmenu .box {
+    margin: 4px;
+    font-size:15pt;
+}
+.mainmenu .box .header{
+    font-weight:bold;
+}
+.mainmenu .box .option {
+    margin:4px;
+    background-color:#ff9bff;    
+    cursor:pointer;
+}
+.mainmenu .box .option.selected{
+    background-color: #ff33ff;
+}
+.smalloptions .option{
+    display:inline-block;
+    border:1px solid black;
+    width:3em;
+        height:4em;
+}
+
+.button{
+    cursor:pointer;
+}

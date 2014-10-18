@@ -29,34 +29,75 @@
         <script src="js/libs/knockout/knockout-min.js"></script>
     </head>
     <body>
+
         <div class="app">
-            
-            <h1 data-bind="text:calculation"></h1>
-            
-            <div class="output-panel">
-                <div  class="digit output" data-bind="text:digit3"></div>
-                <div class="digit output" data-bind="text:digit2"></div>
-                <div class="digit output" data-bind="text:digit1"></div>
-                <div class="digit output" data-bind="text:digit0"></div>                
+            <div data-bind="ifnot:challengeRunning">
+                <div class="mainmenu" >
+                    <div class="box">
+                        <div class="header">Eingabe</div>
+                        <div class="smalloptions">
+                            <div class="option" data-bind="click:set123,css:{selected:is123()}">123<br>456<br>789</div>
+                            <div class="option" data-bind="click:set789,css:{selected:is789()}">789<br>456<br>123</div>
+                        </div>
+                    </div>
+                    <div class="box">
+                        <div class="header">Modus</div>
+                        <div data-bind="foreach:modes">
+                            <div class="option" data-bind="click:setActive,css:{selected:isActive()},text:display"></div>
+                        </div>
+                    </div>
+                    <div class="box">
+                        <div class="header">Challenge</div>
+                        <div class="button" data-bind="click:start5MinChallenge">5 Minuten</div>
+                    </div>
+                </div>
             </div>
-            <div class="enter-panel">
-                <div class="digit enter" data-bind="click:press0">0</div>
-                <div class="digit enter" data-bind="click:press1">1</div>
-                <div class="digit enter" data-bind="click:press2">2</div>
-                <div class="digit enter"  data-bind="click:press3">3</div>
-                <div class="digit enter" data-bind="click:press4">4</div>
-                <div class="digit enter" data-bind="click:press5">5</div>
-                <div class="digit enter" data-bind="click:press6">6</div>
-                <div class="digit enter" data-bind="click:press7">7</div>
-                <div class="digit enter" data-bind="click:press8">8</div>
-                <div class="digit enter"  data-bind="click:press9">9</div>
-                <div class="digit enter" data-bind="click:pressClear">C</div>
-                <div class="digit enter" data-bind="click:pressOK">☻</div>
+            <div  data-bind="if:challengeRunning">
+                <h1 data-bind="text:calculation"></h1>
+
+                <div class="output-panel">
+                    <div  class="digit output" data-bind="text:digit3"></div>
+                    <div class="digit output" data-bind="text:digit2"></div>
+                    <div class="digit output" data-bind="text:digit1"></div>
+                    <div class="digit output" data-bind="text:digit0"></div>                
+                </div>
+                <div data-bind="if:is123()">
+                    <div class="enter-panel">
+                        <div class="digit enter" data-bind="click:press1">1</div>
+                        <div class="digit enter" data-bind="click:press2">2</div>
+                        <div class="digit enter"  data-bind="click:press3">3</div>
+                        <div class="digit enter" data-bind="click:press4">4</div>
+                        <div class="digit enter" data-bind="click:press5">5</div>
+                        <div class="digit enter" data-bind="click:press6">6</div>
+                        <div class="digit enter" data-bind="click:press7">7</div>
+                        <div class="digit enter" data-bind="click:press8">8</div>
+                        <div class="digit enter"  data-bind="click:press9">9</div>
+                        <div class="digit enter" data-bind="click:press0">0</div>
+                        <div class="digit enter" data-bind="click:pressClear">C</div>
+                        <div class="digit enter" data-bind="click:pressOK">=</div>
+                    </div>
+                </div>
+                <div data-bind="if:is789()">
+                    <div class="enter-panel" >
+                        <div class="digit enter" data-bind="click:press7">7</div>
+                        <div class="digit enter" data-bind="click:press8">8</div>
+                        <div class="digit enter"  data-bind="click:press9">9</div>
+                        <div class="digit enter" data-bind="click:press4">4</div>
+                        <div class="digit enter" data-bind="click:press5">5</div>
+                        <div class="digit enter" data-bind="click:press6">6</div>
+                        <div class="digit enter" data-bind="click:press1">1</div>
+                        <div class="digit enter" data-bind="click:press2">2</div>
+                        <div class="digit enter"  data-bind="click:press3">3</div>
+                        <div class="digit enter" data-bind="click:press0">0</div>
+                        <div class="digit enter" data-bind="click:pressClear">C</div>
+                        <div class="digit enter" data-bind="click:pressOK">=</div>
+                    </div>
+                </div>
+                <h1>Punkte: <span data-bind="text:score"></span></h1>
             </div>
-            <h1>Punkte: <span data-bind="text:score"></span></h1>
         </div>
         <script type="text/javascript" src="cordova.js"></script>
-        
+
         <script type="text/javascript" src="js/index.js"></script>
     </body>
 </html>

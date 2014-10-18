@@ -16,117 +16,242 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-var app = {
-    // Application Constructor
-    initialize: function() {
-        this.bindEvents();
-    },
-    // Bind Event Listeners
-    //
-    // Bind any events that are required on startup. Common events are:
-    // 'load', 'deviceready', 'offline', and 'online'.
-    bindEvents: function() {
-        document.addEventListener('deviceready', this.onDeviceReady, false);
-        document.addEventListener('load', this.onLoad, false);
-        
-        console.log('binding events');
-        
-        var getInt = function(minInclusive,maxInclusive){
-            return Math.round(Math.random()*(maxInclusive-minInclusive))+minInclusive;
-        }
-        var calculations=[
-            {
-                text:"simple",
-                create:function(){
-                    while(true){
-                        var x=getInt(100,9999);
-                        var y = getInt(2,10);
-                        if((x*y)>9999)
+
+
+function onLoad()
+{
+    console.log('binding events');
+    var getInt = function (minInclusive, maxInclusive) {
+        return Math.round(Math.random() * (maxInclusive - minInclusive)) + minInclusive;
+    };
+    var getAny = function (array) {
+        return array[getInt(0, array.length - 1)];
+    };
+
+    var modeEasy = function () {
+        var self = this;
+        self.id = "easy";
+        self.display = "Einfach";
+        self.setActive = function () {
+            model.curMode(self.id);
+        };
+        self.isActive = function () {
+            return model.curMode() === self.id;
+        };
+        self.create = function () {
+            return {
+                next: function () {
+                    while (true) {
+                        var x = getInt(1, 10);
+                        var y = getInt(1, 10);
+                        var op = getAny(['-', '*', '+', '/']);
+                        switch (op) {
+                            case '-':
+                                return {
+                                    targetNr: x.toString(),
+                                    formula: (x + y) + "-" + y + "="
+                                };
+                            case '+':
+                                return {
+                                    targetNr: (x + y).toString(),
+                                    formula: x + "+" + y + "="
+                                };
+                            case '*':
+                                return {
+                                    targetNr: (x * y).toString(),
+                                    formula: x + "*" + y + "="
+                                };
+                            case '/':
+                                return {
+                                    targetNr: x.toString(),
+                                    formula: (x * y) + "/" + y + "="
+                                };
+
+                        }
+                    }
+                }
+            };
+        };
+    };
+    var modeRandom = function () {
+        var self = this;
+        self.id = "random";
+        self.display = "Zufall";
+        self.setActive = function () {
+            model.curMode(self.id);
+        };
+        self.isActive = function () {
+            return model.curMode() === self.id;
+        };
+        self.create = function () {
+            return {
+                next: function () {
+                    while (true) {
+                        var x = getInt(100, 9999);
+                        var y = getInt(2, 10);
+                        if ((x * y) > 9999)
                             continue;
-                        
                         return {
-                            targetNr: (x*y).toString(),
-                            formula: x+"*"+y+"="
+                            targetNr: (x * y).toString(),
+                            formula: x + "*" + y + "="
                         }
                     }
                 }
             }
-        ];
-        var model = {
-            newCalculation: function(){
-                var calc=calculations[0].create();
-                model.calculation(calc.formula);
-                model.targetNr(calc.targetNr.toString());
-                model.nr("");
-            },
-            calculation: ko.observable("34 * 5"),
-            targetNr: ko.observable("170"),
-            nr:ko.observable(""),
-            getDigit:function(pos){
-                var nr=model.nr().toString();
-                if(pos>=nr.length) return "-";
-                return nr.substr(nr.length-pos-1, 1);
-            },
-            digit0:ko.pureComputed(function(){
-                return model.getDigit(0);
-            }),
-            digit1:ko.pureComputed(function(){
-                return model.getDigit(1);
-            }),
-            digit2:ko.pureComputed(function(){
-                return model.getDigit(2);
-            }),
-            digit3:ko.pureComputed(function(){
-                return model.getDigit(3);
-            }),
-            score:ko.observable(0),
-            pressOK:function(){
-                if(model.targetNr()===model.nr()) {
-                    model.score(model.score()+1);
-                } else {
-                    model.score(model.score()-1);
-                }
-                model.newCalculation();
-                console.log(model.score())
-            },
-            pressClear:function(){model.nr("");},
-            press0:function(){model.press(0)},
-            press1:function(){model.press(1)},
-            press2:function(){model.press(2)},
-            press3:function(){model.press(3)},
-            press4:function(){model.press(4)},
-            press5:function(){model.press(5)},
-            press6:function(){model.press(6)},
-            press7:function(){model.press(7)},
-            press8:function(){model.press(8)},
-            press9:function(){model.press(9)},
-            press:function(digit){
-                model.nr(digit+model.nr());
-            }
         }
-        ko.applyBindings(model);
-    },
-    onLoad:function(){
-        console.log("Loaded");
-    },
-    // deviceready Event Handler
-    //
-    // The scope of 'this' is the event. In order to call the 'receivedEvent'
-    // function, we must explicitly call 'app.receivedEvent(...);'
-    onDeviceReady: function() {
-        app.receivedEvent('deviceready');
-    },
-    // Update DOM on a Received Event
-    receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
-
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
-
-        console.log('Received Event: ' + id);
     }
-};
+    var modeTower = function () {
+        var self = this;
+        self.id = "tower";
+        self.display = "Turm-rechnung";
+        self.setActive = function () {
+            model.curMode(self.id);
+        };
+        self.isActive = function () {
+            return model.curMode() === self.id;
+        };
+        self.create = function () {
+            var startNr = 1;
+            var _retval = {
+                index: -1,
+                list: [],
+                next: function () {
+                    _retval.index++;
+                    if (_retval.index >= _retval.list.length)
+                        return false;
+                    return _retval.list[_retval.index];
+                }
+            }
+            for (var i = 2; i < 10; ++i) {
+                var formula = startNr + " * " + i;
+                startNr *= i;
+                _retval.list.push({
+                    targetNr: startNr,
+                    formula: formula
+                });
+            }
+            for (var i = 2; i < 10; ++i) {
+                var formula = startNr + " / " + i;
+                startNr /= i;
+                _retval.list.push({
+                    targetNr: startNr,
+                    formula: formula
+                });
+            }
+            return _retval;
+        };
+    };
+    var model = {
+        challengeRunning: ko.observable(false),
+        curMode: ko.observable("random"),
+        curLayout: ko.observable("123"),
+        is123: function () {
+            return model.curLayout() === "123";
+        },
+        is789: function () {
+            return model.curLayout() === "789";
+        },
+        set123: function () {
+            model.curLayout("123");
+        },
+        set789: function () {
+            model.curLayout("789");
+        },
+        startChallenge: function (timeLimit)
+        {
+            var x = ko.utils.arrayFirst(ko.unwrap(model.modes), function (mode) {
+                return mode.isActive();
+            });
+            model.score(0);
+            model.challenge = x.create();
+            model.newCalculation();
+        },
+        start5MinChallenge: function () {
+            model.startChallenge(5);
+        },
+        modes: [new modeEasy(), new modeRandom(), new modeTower()],
+        challenge: {
+        },
+        newCalculation: function () {
+            var calc = model.challenge.next();
+            if (calc === false) {
+                model.challengeRunning(false);
+                return;
+            }
+            model.calculation(calc.formula);
+            model.targetNr(calc.targetNr.toString());
+            model.nr("");
+            model.challengeRunning(true);
+        },
+        calculation: ko.observable("34 * 5"),
+        targetNr: ko.observable("170"),
+        nr: ko.observable(""),
+        getDigit: function (pos) {
+            var nr = model.nr().toString();
+            if (pos >= nr.length)
+                return "-";
+            return nr.substr(nr.length - pos - 1, 1);
+        },
+        digit0: ko.pureComputed(function () {
+            return model.getDigit(0);
+        }),
+        digit1: ko.pureComputed(function () {
+            return model.getDigit(1);
+        }),
+        digit2: ko.pureComputed(function () {
+            return model.getDigit(2);
+        }),
+        digit3: ko.pureComputed(function () {
+            return model.getDigit(3);
+        }),
+        score: ko.observable(0),
+        pressOK: function () {
+            if (model.targetNr() === model.nr()) {
+                model.score(model.score() + 1);
+            } else {
+                model.score(model.score() - 1);
+            }
+            model.newCalculation();
+            console.log(model.score())
+        },
+        pressClear: function () {
+            model.nr("");
+        },
+        press0: function () {
+            model.press(0)
+        },
+        press1: function () {
+            model.press(1)
+        },
+        press2: function () {
+            model.press(2)
+        },
+        press3: function () {
+            model.press(3)
+        },
+        press4: function () {
+            model.press(4)
+        },
+        press5: function () {
+            model.press(5)
+        },
+        press6: function () {
+            model.press(6)
+        },
+        press7: function () {
+            model.press(7)
+        },
+        press8: function () {
+            model.press(8)
+        },
+        press9: function () {
+            model.press(9)
+        },
+        press: function (digit) {
+            model.nr(digit + model.nr());
+        }
+    }
+    ko.applyBindings(model);
+}
 
-app.initialize();
+onLoad()
